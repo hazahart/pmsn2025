@@ -30,3 +30,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+
+  fonts:
+    - family: Vikings
+      fonts:
+        - asset: fonts/vikings.ttf

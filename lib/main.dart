@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn2020/screens/login_screen.dart';
 
 void main() => runApp(PMSNApp());
 
@@ -8,11 +9,9 @@ class PMSNApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(title: Text('Material App Bar')),
-        body: Center(child: Text('Hello World')),
-      ),
+      home: LoginScreen(),
     );
   }
 }
