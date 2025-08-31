@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -93,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             txtPassword,
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () => login(userController.text),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                 isDark ? Colors.blue[200] : Colors.blue,
@@ -113,4 +114,23 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  showToast(String mensaje, {ToastificationType? tipo, AlignmentGeometry? align}) {
+    toastification.show(
+      context: context,
+      title: Text(mensaje),
+      autoCloseDuration: Duration(seconds: 3),
+      type: tipo,
+      alignment: align
+    );
+  }
+
+  login(String user) {
+    if (user.isEmpty) {
+      showToast("Por favor ingresa tu correo", tipo: ToastificationType.error);
+    } else {
+      showToast("Has iniciado sesión como $user", tipo: ToastificationType.success);
+    }
+  }
+
 }
