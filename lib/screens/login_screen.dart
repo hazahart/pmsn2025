@@ -11,16 +11,22 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final opacityDark = isDark ? 0.5 : 1.0;
+
     TextEditingController userController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
     final txtUser = TextField(
       keyboardType: TextInputType.emailAddress,
       controller: userController,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black),
       decoration: InputDecoration(
         hintText: 'Correo electrónico',
+        hintStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200],
         border: OutlineInputBorder(),
       ),
     );
@@ -29,10 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
       keyboardType: TextInputType.visiblePassword,
       controller: passwordController,
       obscureText: true,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black),
       decoration: InputDecoration(
         hintText: 'Contraseña',
+        hintStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200],
         border: OutlineInputBorder(),
       ),
     );
@@ -43,52 +51,54 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Positioned.fill(
             child: Opacity(
-              opacity: 0.5,
+              opacity: opacityDark,
               child: Image.asset(
                 "assets/images/login_background.png",
                 fit: BoxFit.cover,
               ),
             ),
           ),
-
-          // Contenido
           Center(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'Bienvenido',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: isDark ? Colors.white : Colors.black,
                       fontSize: 25,
                       fontFamily: 'Vikings',
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 40),
-
-                  // Container con fondo borroso
+                  const SizedBox(height: 40),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(25),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                       child: Container(
-                        padding: EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.1),
+                          color: isDark
+                              ? Colors.white.withOpacity(0.1)
+                              : Colors.black.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Column(
                           children: [
                             txtUser,
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             txtPassword,
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {},
-                              child: Text('Iniciar sesión'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                isDark ? Colors.blue[200] : Colors.blue,
+                              ),
+                              child: Text('Iniciar sesión', style: TextStyle(color: Colors.black),),
                             ),
                           ],
                         ),
