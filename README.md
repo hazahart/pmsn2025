@@ -1,4 +1,4 @@
-# pmsn2020
+# Programación Móvil y Servicios en la Nube (AGO-DIC 2025)
 
 Proyectos de la materia `Programación Móvil y Servicios en la Nube`
 
