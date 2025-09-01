@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4
   toastification: ^3.0.3
+  lottie: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +32,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/animations/
 
   fonts:
     - family: Vikings
