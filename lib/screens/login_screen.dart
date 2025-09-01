@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'Correo electrónico',
         hintStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         filled: true,
-        fillColor: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200],
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.3) : Colors.grey[200],
         border: OutlineInputBorder(),
       ),
     );
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'Contraseña',
         hintStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         filled: true,
-        fillColor: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200],
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.3) : Colors.grey[200],
         border: OutlineInputBorder(),
       ),
     );
@@ -83,8 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: isDark
-                              ? Colors.white.withOpacity(0.1)
-                              : Colors.black.withOpacity(0.05),
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : Colors.black.withValues(alpha: 0.25),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Column(
