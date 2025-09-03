@@ -152,9 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
         tipo: ToastificationType.success,
       );
       isLoading = true;
-      setState(() {
-        print(isLoading);
-      });
+      setState(() {});
+      Future.delayed(Duration(milliseconds: 3000)).then((value) => Navigator.pushNamed(context, '/home')); 
     }
   }
 
