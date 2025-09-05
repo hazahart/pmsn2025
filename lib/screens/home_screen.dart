@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _buildIcon(IconData icon, int index) {
+  Widget _buildIcon(IconData icon, int index, String nombre) {
     bool isSelected = _selectedIndex == index;
     return GestureDetector(
       onTap: () => _onItemTapped(index),
@@ -65,11 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildIcon(Icons.home, 0),
-            _buildIcon(Icons.search, 1),
+            _buildIcon(Icons.home, 0, "Home"),
+            _buildIcon(Icons.search, 1, "Search"),
             const SizedBox(width: 48),
-            _buildIcon(Icons.notifications, 2),
-            _buildIcon(Icons.person, 3),
+            _buildIcon(Icons.notifications, 2, "Notifications"),
+            _buildIcon(Icons.person, 3, "Contacts"),
           ],
         ),
       ),
