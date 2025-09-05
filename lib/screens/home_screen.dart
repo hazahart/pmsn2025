@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/value_listener.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -45,16 +47,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkValue = ValueListener.isDark.value;
     return Scaffold(
-      appBar: AppBar(title: const Text('Ci')),
+      appBar: AppBar(
+        title: const Text('Ci'),
+        actions: [
+          ValueListenableBuilder(
+            valueListenable: ValueListener.isDark,
+            builder: (context, value, child) {
+              return value
+                  ? IconButton(
+                      onPressed: () {
+                        ValueListener.isDark.value = false;
+                      },
+                      icon: Icon(Icons.light_mode),
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        ValueListener.isDark.value = true;
+                      },
+                      icon: Icon(Icons.dark_mode),
+                    );
+            },
+          ),
+        ],
+      ),
       body: Center(child: Text('Seleccionaste $_selectedIndex')),
       drawer: Drawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          ValueListener.isDark.value = !ValueListener.isDark.value;
+        },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.all(Radius.circular(50)),
         ),
-        child: const Icon(Icons.dark_mode),
+        child: ValueListener.isDark.value ? Icon(Icons.light_mode) : Icon(Icons.dark_mode),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
