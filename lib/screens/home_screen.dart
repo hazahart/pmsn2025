@@ -74,7 +74,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Center(child: Text('Seleccionaste $_selectedItem')),
-      drawer: Drawer(),
+      drawer: Drawer(
+        child: NavigationDrawer(
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                radius: 30,
+                backgroundImage: ValueListener.isDark.value
+                    ? NetworkImage("https://media1.tenor.com/m/ulUwa3QqhooAAAAC/kazuha-genshin-impact-kazuha-drinking.gif")
+                    : null,
+                child: !ValueListener.isDark.value
+                    ? Icon(Icons.person, size: 30, color: Colors.white)
+                    : null,
+              ),
+              accountName: Text(
+                "Username",
+                style: TextStyle(color: Colors.white),
+              ),
+              accountEmail: Text(
+                "usermail@email.com",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ValueListener.isDark.value = !ValueListener.isDark.value;
@@ -82,7 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.all(Radius.circular(50)),
         ),
-        child: ValueListener.isDark.value ? Icon(Icons.light_mode) : Icon(Icons.dark_mode),
+        child: ValueListener.isDark.value
+            ? Icon(Icons.light_mode)
+            : Icon(Icons.dark_mode),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
