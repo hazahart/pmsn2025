@@ -11,9 +11,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  String _selectedItem = "";
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index, String? nombre) {
     setState(() {
+      _selectedItem = nombre ?? "";
       _selectedIndex = index;
     });
   }
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildIcon(IconData icon, int index, String nombre) {
     bool isSelected = _selectedIndex == index;
     return GestureDetector(
-      onTap: () => _onItemTapped(index),
+      onTap: () => _onItemTapped(index, nombre),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -47,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkValue = ValueListener.isDark.value;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ci'),
@@ -72,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Center(child: Text('Seleccionaste $_selectedIndex')),
+      body: Center(child: Text('Seleccionaste $_selectedItem')),
       drawer: Drawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -93,10 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildIcon(Icons.home, 0, "Home"),
-            _buildIcon(Icons.search, 1, "Search"),
+            _buildIcon(Icons.search, 1, "Buscar"),
             const SizedBox(width: 48),
-            _buildIcon(Icons.notifications, 2, "Notifications"),
-            _buildIcon(Icons.person, 3, "Contacts"),
+            _buildIcon(Icons.notifications, 2, "Notificaciones"),
+            _buildIcon(Icons.person, 3, "Contactos"),
           ],
         ),
       ),

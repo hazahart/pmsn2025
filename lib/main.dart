@@ -15,9 +15,7 @@ class PMSNApp extends StatelessWidget {
       valueListenable: ValueListener.isDark,
       builder: (context, value, _) {
         return MaterialApp(
-          theme: value ? ThemeData.dark() : ThemeData.light(),
-          // darkTheme: ThemeApp.darkTheme(),
-          // themeMode: ThemeMode.system,
+          theme: value ? ThemeApp.darkTheme() : ThemeApp.lightTheme(),
           title: 'Material App',
           home: LoginScreen(),
           routes: {
