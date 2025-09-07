@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class ResonatorStatsPainter extends CustomPainter {
-  final double progressPercent;
+  final double currentValue;
+  final double maxValue;
   final double strokeWidth;
   final double filledStrokeWidth;
 
@@ -11,7 +12,8 @@ class ResonatorStatsPainter extends CustomPainter {
   final Paint strokeFilledPaint;
 
   ResonatorStatsPainter({
-    required this.progressPercent,
+    required this.currentValue,
+    required this.maxValue,
     this.strokeWidth = 2.0,
     this.filledStrokeWidth = 4.0,
   })  : bgPaint = Paint()..color = Colors.white.withValues(alpha: 0.25),
@@ -25,7 +27,10 @@ class ResonatorStatsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
+    final radius =size.width * 0.15;
+
+    // Normalizar a porcentaje [0, 1]
+    final progress = (currentValue / maxValue).clamp(0.0, 1.0);
 
     canvas.drawCircle(center, radius, bgPaint);
     canvas.drawCircle(center, radius - strokeWidth, strokeBgPaint);
@@ -33,7 +38,7 @@ class ResonatorStatsPainter extends CustomPainter {
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius - (strokeWidth / 2)),
       -math.pi / 2,
-      (progressPercent / 100) * math.pi * 2,
+      progress * math.pi * 2,
       false,
       strokeFilledPaint,
     );

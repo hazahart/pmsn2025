@@ -17,23 +17,23 @@ class ResonatorScreenState extends State<ResonatorScreen> {
     Resonator(
       name: "Cartethyia",
       image: "assets/images/wuwa/cartethyia.webp",
-      hp: 40,
-      atk: 60,
-      def: 30,
+      hp: 51250,
+      atk: 2560,
+      def: 980,
     ),
     Resonator(
       name: "Phrolova",
       image: "assets/images/wuwa/phrolova.webp",
-      hp: 50,
-      atk: 70,
-      def: 40,
+      hp: 17500,
+      atk: 2250,
+      def: 720,
     ),
     Resonator(
       name: "Carlotta",
       image: "assets/images/wuwa/carlotta.webp",
-      atk: 50,
-      hp: 25,
-      def: 10,
+      hp: 18000,
+      atk: 2149,
+      def: 1090,
     ),
   ];
 
