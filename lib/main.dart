@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn2020/practica_1/screens/p1_home_screen.dart';
+import 'package:pmsn2020/practica_1/p1_home_screen.dart';
 import 'package:pmsn2020/screens/home_screen.dart';
 import 'package:pmsn2020/screens/login_screen.dart';
 import 'package:pmsn2020/utils/theme_app.dart';
