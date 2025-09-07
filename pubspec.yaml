@@ -15,6 +15,7 @@ dependencies:
   toastification: ^3.0.3
   lottie: ^3.2.0
   dot_navigation_bar: ^1.0.2
+  flutter_svg: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +35,8 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/icons/wuwa/
+    - assets/images/wuwa/
 
   fonts:
     - family: Vikings

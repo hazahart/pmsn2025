@@ -1,50 +1,192 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn2020/practica_1/models/resonator.dart';
+import 'package:pmsn2020/practica_1/widgets/resonator_widget.dart';
 
-class P1Main extends StatefulWidget {
-  const P1Main({super.key});
+class ResonatorScreen extends StatefulWidget {
+  const ResonatorScreen({super.key});
 
   @override
-  State<P1Main> createState() => _P1MainState();
+  ResonatorScreenState createState() => ResonatorScreenState();
 }
 
-class _P1MainState extends State<P1Main> {
-  late ScrollController _scrollController;
+class ResonatorScreenState extends State<ResonatorScreen> {
+  final ScrollController _scrollController = ScrollController();
   double toolbarOpacity = 1.0;
+
+  final List<Resonator> resonators = [
+    Resonator(
+      name: "Cartethyia",
+      image: "assets/images/wuwa/cartethyia.webp",
+      hp: 40,
+      atk: 60,
+      def: 30,
+    ),
+    Resonator(
+      name: "Phrolova",
+      image: "assets/images/wuwa/phrolova.webp",
+      hp: 50,
+      atk: 70,
+      def: 40,
+    ),
+    Resonator(
+      name: "Carlotta",
+      image: "assets/images/wuwa/carlotta.webp",
+      atk: 50,
+      hp: 25,
+      def: 10,
+    ),
+  ];
 
   @override
   void initState() {
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      final scrollOffset = _scrollController.offset;
-      if (scrollOffset <= 80) {
-        setState(() {
-          toolbarOpacity = (80 - scrollOffset) / 80;
-        });
-      } else {
-        setState(() {
-          toolbarOpacity = 1.0;
-        });
-      }
-    });
     super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        toolbarOpacity = (_scrollController.offset <= 80)
+            ? (80 - _scrollController.offset) / 80
+            : 0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  /// Abre un dialogo para crear un nuevo resonador
+  void _showAddResonatorDialog() {
+    final nameController = TextEditingController();
+    final imageController = TextEditingController();
+    final hpController = TextEditingController();
+    final atkController = TextEditingController();
+    final defController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Nuevo Resonador"),
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: "Nombre"),
+              ),
+              TextField(
+                controller: imageController,
+                decoration: InputDecoration(
+                  labelText: "Ruta de imagen (ej. assets/images/wuwa/cartethyia.webp)",
+                ),
+              ),
+              TextField(
+                controller: hpController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: "HP"),
+              ),
+              TextField(
+                controller: atkController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: "ATK"),
+              ),
+              TextField(
+                controller: defController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: "DEF"),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (nameController.text.isNotEmpty &&
+                  imageController.text.isNotEmpty) {
+                setState(() {
+                  resonators.add(
+                    Resonator(
+                      name: nameController.text,
+                      image: imageController.text,
+                      hp: double.tryParse(hpController.text) ?? 0,
+                      atk: double.tryParse(atkController.text) ?? 0,
+                      def: double.tryParse(defController.text) ?? 0,
+                    ),
+                  );
+                });
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Resonador agregado ✅")),
+                );
+              }
+            },
+            child: Text("Guardar"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xff929290), Color(0xff4f5551), Color(0xff141413)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: Stack(
           children: [
-            ListView.builder(
+            Scrollbar(
               controller: _scrollController,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text("Item $index"),
-                );
-              },
+              thumbVisibility: true,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.only(top: 80, bottom: 100),
+                itemCount: resonators.length,
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: ResonatorWidget(resonator: resonators[index]),
+                ),
+              ),
+            ),
+            Opacity(
+              opacity: toolbarOpacity,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Wuthering Waves Characters',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.menu, color: Colors.white, size: 32),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xffddbf61),
+        onPressed: _showAddResonatorDialog,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
