@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../utils/value_listener.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,41 +17,73 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     switch (index) {
-      case 0:
+      case 1:
         Navigator.pushNamed(context, '/practica_1');
         break;
-      case 1:
+      case 2:
         print("Abrir búsqueda");
         break;
-      case 2:
+      case 3:
         print("Notificaciones");
         break;
-      case 3:
+      case 4:
         print("Abrir contactos");
         break;
     }
   }
 
-  // Grid de botones
-  Widget _buildGridButton(IconData icon, String label, int index) {
+  // Grid de botones con color dinámico y fondo opcional
+  Widget _buildGridButton(
+    IconData icon,
+    String label,
+    int index, {
+    String? backgroundImage,
+    double imageOpacity = 0.3,
+    Color? backgroundColor,
+    Color? dynamicColor,
+  }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(16),
+        elevation: 5,
+        padding: const EdgeInsets.all(0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: dynamicColor ?? backgroundColor ?? Colors.blueAccent,
       ),
       onPressed: () => _onItemTapped(index, label),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Icon(icon, size: 40),
-          const SizedBox(height: 8),
-          Text(label, textAlign: TextAlign.center),
+          if (backgroundImage != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Opacity(
+                opacity: imageOpacity,
+                child: Image.asset(
+                  backgroundImage,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.white),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  // Construccion de los borones de la barra de navegación
+  // Construccion de los botones de la barra de navegación
   Widget _buildIcon(
     IconData outlinedIcon,
     IconData filledIcon,
@@ -64,13 +95,12 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () => _onItemTapped(index, nombre),
       child: Tooltip(
         message: nombre,
-        // el tooltip es para el texto que se muestra al mantener presionado el boton
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.blue.withValues(alpha: 0.2)
+                ? Colors.blue.withOpacity(0.2)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
@@ -89,9 +119,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // metodo principal
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('PMSN 2025-2'),
@@ -99,19 +130,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ValueListenableBuilder(
             valueListenable: ValueListener.isDark,
             builder: (context, value, child) {
-              return value
-                  ? IconButton(
-                      onPressed: () {
-                        ValueListener.isDark.value = false;
-                      },
-                      icon: Icon(Icons.light_mode),
-                    )
-                  : IconButton(
-                      onPressed: () {
-                        ValueListener.isDark.value = true;
-                      },
-                      icon: Icon(Icons.dark_mode),
-                    );
+              return IconButton(
+                onPressed: () {
+                  ValueListener.isDark.value = !ValueListener.isDark.value;
+                },
+                icon: Icon(value ? Icons.light_mode : Icons.dark_mode),
+              );
             },
           ),
         ],
@@ -122,12 +146,33 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisCount: 2,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          // declaracion del grid de botones
           children: [
-            _buildGridButton(Icons.sports_esports, "Practica 1", 0),
-            _buildGridButton(Icons.search, "Buscar", 1),
-            _buildGridButton(Icons.notifications, "Notificaciones", 2),
-            _buildGridButton(Icons.person, "Contactos", 3),
+            _buildGridButton(
+              Icons.sports_esports,
+              "Practica 1",
+              1,
+              backgroundImage: "assets/images/wuwa/wuwa_logo.jpg",
+              imageOpacity: 0.4,
+              backgroundColor: Colors.black87,
+            ),
+            _buildGridButton(
+              Icons.search,
+              "Buscar",
+              2,
+              dynamicColor: colorScheme.secondary,
+            ),
+            _buildGridButton(
+              Icons.notifications,
+              "Notificaciones",
+              3,
+              dynamicColor: colorScheme.tertiary,
+            ),
+            _buildGridButton(
+              Icons.person,
+              "Contactos",
+              4,
+              dynamicColor: colorScheme.surfaceContainerHighest,
+            ),
           ],
         ),
       ),
@@ -157,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: Icon(Icons.home),
-              title: Text("Practcia 1"),
+              title: Text("Practica 1"),
               onTap: () => Navigator.pushNamed(context, '/practica_1'),
             ),
           ],
@@ -167,12 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           ValueListener.isDark.value = !ValueListener.isDark.value;
         },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.all(Radius.circular(50)),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
         ),
         child: ValueListener.isDark.value
-            ? Icon(Icons.light_mode)
-            : Icon(Icons.dark_mode),
+            ? const Icon(Icons.light_mode)
+            : const Icon(Icons.dark_mode),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -182,23 +227,22 @@ class _HomeScreenState extends State<HomeScreen> {
         notchMargin: 6.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          // botones de la barra de navegación
           children: [
             _buildIcon(
               Icons.sports_esports_outlined,
               Icons.sports_esports,
-              0,
+              1,
               "Practica 1",
             ),
-            _buildIcon(Icons.search_outlined, Icons.search, 1, "Buscar"),
+            _buildIcon(Icons.search_outlined, Icons.search, 2, "Buscar"),
             const SizedBox(width: 48),
             _buildIcon(
               Icons.notifications_outlined,
               Icons.notifications,
-              2,
+              3,
               "Notificaciones",
             ),
-            _buildIcon(Icons.person_outline, Icons.person, 3, "Contactos"),
+            _buildIcon(Icons.person_outline, Icons.person, 4, "Contactos"),
           ],
         ),
       ),

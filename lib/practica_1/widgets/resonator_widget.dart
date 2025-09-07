@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/practica_1/models/resonator.dart';
+import 'package:pmsn2020/practica_1/screens/resonator_details.dart';
 import 'dart:math' as math;
 import 'package:pmsn2020/practica_1/widgets/resonator_stats.dart';
 
@@ -37,7 +38,7 @@ class ResonatorWidget extends StatelessWidget {
                 height: rowHeight * 0.62,
                 margin: EdgeInsets.symmetric(horizontal: screen.width * 0.1),
                 decoration: BoxDecoration(
-                  color: const Color(0xfffceee3).withOpacity(0.1),
+                  color: const Color(0xfffceee3).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(22),
                 ),
               ),
@@ -54,7 +55,7 @@ class ResonatorWidget extends StatelessWidget {
                 height: rowHeight * 0.55,
                 margin: EdgeInsets.symmetric(horizontal: screen.width * 0.1),
                 decoration: BoxDecoration(
-                  color: const Color(0xffddbf61).withOpacity(0.4),
+                  color: const Color(0xffddbf61).withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(22),
                 ),
               ),
@@ -73,38 +74,70 @@ class ResonatorWidget extends StatelessWidget {
                     tag: resonator.name,
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: Image.asset(
-                        resonator.image,
-                        fit: BoxFit.contain,
-                      ),
+                      child: Image.asset(resonator.image, fit: BoxFit.contain),
                     ),
                   ),
                 ),
               ),
-
-              SizedBox(width: screen.width * 0.03), // separación
-
+              SizedBox(width: screen.width * 0.03),
               // Stats y botón
               Flexible(
                 flex: 1,
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                      vertical: rowHeight * 0.185, horizontal: screen.width * 0.01),
+                    vertical: rowHeight * 0.185,
+                    horizontal: screen.width * 0.01,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ResonatorStats(progress: resonator.hp, type: StatType.hp),
-                      ResonatorStats(progress: resonator.atk, type: StatType.atk),
-                      ResonatorStats(progress: resonator.def, type: StatType.def),
-                      SizedBox(
-                        height: rowHeight * 0.09,
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Ver detalles",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: rowHeight * 0.04,
+                      ResonatorStats(
+                        progress: resonator.atk,
+                        type: StatType.atk,
+                      ),
+                      ResonatorStats(
+                        progress: resonator.def,
+                        type: StatType.def,
+                      ),
+                      Padding(
+                        padding: EdgeInsetsGeometry.only(right: 30),
+                        child: SizedBox(
+                          height: rowHeight * 0.09,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ResonatorDetailsPage(resonator: resonator),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              elevation: 5,
+                            ),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFFF29758), Color(0xFFEF5D67)],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Ver detalles",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: rowHeight * 0.035,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
