@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'resonator_stats_painter.dart';
+import '../utils/resonator_stats_painter.dart';
 
 enum StatType { hp, atk, def }
 
