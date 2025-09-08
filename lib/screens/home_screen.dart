@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 import '../utils/value_listener.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,13 +22,31 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushNamed(context, '/practica_1');
         break;
       case 2:
-        print("Abrir búsqueda");
+        toastification.show(
+          context: context,
+          title: Text('Buscar'),
+          type: ToastificationType.info,
+          autoCloseDuration: Duration(milliseconds: 3000),
+          alignment: AlignmentGeometry.topRight,
+        );
         break;
       case 3:
-        print("Notificaciones");
+        toastification.show(
+          context: context,
+          title: Text('Notificaciones'),
+          type: ToastificationType.info,
+          autoCloseDuration: Duration(milliseconds: 3000),
+          alignment: AlignmentGeometry.topRight,
+        );
         break;
       case 4:
-        print("Abrir contactos");
+        toastification.show(
+          context: context,
+          title: Text('Contactos'),
+          type: ToastificationType.info,
+          autoCloseDuration: Duration(milliseconds: 3000),
+          alignment: AlignmentGeometry.topRight,
+        );
         break;
     }
   }
@@ -100,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.blue.withOpacity(0.2)
+                ? Colors.blue.withValues(alpha: 0.2)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
