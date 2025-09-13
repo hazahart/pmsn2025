@@ -105,11 +105,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: isDark
                                     ? Colors.blue[200]
-                                    : Colors.blue,
+                                    : Colors.blue[300],
                               ),
                               child: Text(
                                 'Iniciar sesión',
                                 style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pushNamed(context, '/register'),
+                              child: Text(
+                                'Registrarse',
+                                style: TextStyle(color: Colors.blue[200]),
                               ),
                             ),
                           ],
@@ -153,7 +160,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       isLoading = true;
       setState(() {});
-      Future.delayed(Duration(milliseconds: 3000)).then((value) => Navigator.pushNamed(context, '/home')); 
+      Future.delayed(
+        Duration(milliseconds: 3000),
+      ).then((value) => Navigator.pushNamed(context, '/home'));
     }
   }
 
