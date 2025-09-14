@@ -256,6 +256,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
 
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+
     if (_profileImage == null) {
       showToast("Por favor, selecciona una imagen de perfil.", tipo: ToastificationType.warning);
       return;
@@ -274,6 +276,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final existingUser = await usersDB.getUserByEmail(email);
     if (existingUser != null) {
       showToast("Este correo electrónico ya está registrado.", tipo: ToastificationType.error);
+      return;
+    }
+
+    if (!emailRegex.hasMatch(email)) {
+      showToast("Por favor, introduce un correo electrónico válido.", tipo: ToastificationType.error);
       return;
     }
 
