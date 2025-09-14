@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import '../utils/value_listener.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  // 1. El campo de usuario ahora es opcional (nullable).
+  final Map<String, dynamic>? user;
+
+  // 2. El constructor ya no requiere el parámetro 'user'.
+  const HomeScreen({super.key, this.user});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -24,43 +29,42 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         toastification.show(
           context: context,
-          title: Text('Buscar'),
+          title: const Text('Buscar'),
           type: ToastificationType.info,
-          autoCloseDuration: Duration(milliseconds: 3000),
-          alignment: AlignmentGeometry.topRight,
+          autoCloseDuration: const Duration(milliseconds: 3000),
+          alignment: Alignment.topRight,
         );
         break;
       case 3:
         toastification.show(
           context: context,
-          title: Text('Notificaciones'),
+          title: const Text('Notificaciones'),
           type: ToastificationType.info,
-          autoCloseDuration: Duration(milliseconds: 3000),
-          alignment: AlignmentGeometry.topRight,
+          autoCloseDuration: const Duration(milliseconds: 3000),
+          alignment: Alignment.topRight,
         );
         break;
       case 4:
         toastification.show(
           context: context,
-          title: Text('Contactos'),
+          title: const Text('Contactos'),
           type: ToastificationType.info,
-          autoCloseDuration: Duration(milliseconds: 3000),
-          alignment: AlignmentGeometry.topRight,
+          autoCloseDuration: const Duration(milliseconds: 3000),
+          alignment: Alignment.topRight,
         );
         break;
     }
   }
 
-  // Grid de botones con color dinámico y fondo opcional
   Widget _buildGridButton(
-    IconData icon,
-    String label,
-    int index, {
-    String? backgroundImage,
-    double imageOpacity = 0.3,
-    Color? backgroundColor,
-    Color? dynamicColor,
-  }) {
+      IconData icon,
+      String label,
+      int index, {
+        String? backgroundImage,
+        double imageOpacity = 0.3,
+        Color? backgroundColor,
+        Color? dynamicColor,
+      }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         elevation: 5,
@@ -102,13 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Construccion de los botones de la barra de navegación
   Widget _buildIcon(
-    IconData outlinedIcon,
-    IconData filledIcon,
-    int index,
-    String nombre,
-  ) {
+      IconData outlinedIcon,
+      IconData filledIcon,
+      int index,
+      String nombre,
+      ) {
     bool isSelected = _selectedIndex == index;
     return GestureDetector(
       onTap: () => _onItemTapped(index, nombre),
@@ -119,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.blue.withValues(alpha: 0.2)
+                ? Colors.blue.withOpacity(0.2)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
@@ -141,6 +144,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
+    // 3. Se extrae la ruta de la imagen de forma segura (puede ser nula).
+    final imagePath = widget.user?['imagePath'] as String?;
 
     return Scaffold(
       appBar: AppBar(
@@ -196,47 +202,60 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       drawer: Drawer(
-        child: NavigationDrawer(
+        // 4. Se actualiza el Drawer para manejar el caso en que 'user' sea nulo.
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
               currentAccountPicture: CircleAvatar(
-                radius: 30,
-                backgroundImage: ValueListener.isDark.value
-                    ? NetworkImage(
-                        "https://media1.tenor.com/m/ulUwa3QqhooAAAAC/kazuha-genshin-impact-kazuha-drinking.gif",
-                      )
-                    : null,
-                child: !ValueListener.isDark.value
-                    ? Icon(Icons.person, size: 30, color: Colors.white)
+                radius: 40,
+                backgroundImage: imagePath != null ? FileImage(File(imagePath)) : null,
+                child: imagePath == null
+                    ? const Icon(Icons.person, size: 40, color: Colors.white)
                     : null,
               ),
               accountName: Text(
-                "Username",
-                style: TextStyle(color: Colors.white),
+                // Se usan valores por defecto si el usuario es nulo.
+                widget.user?['fullName'] ?? "Nombre de Usuario",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              accountEmail: Text(
-                "usermail@email.com",
-                style: TextStyle(color: Colors.white),
-              ),
+              accountEmail: Text(widget.user?['email'] ?? "correo@ejemplo.com"),
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Practica 1"),
-              onTap: () => Navigator.pushNamed(context, '/practica_1'),
+              leading: const Icon(Icons.sports_esports),
+              title: const Text("Practica 1"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/practica_1');
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Cerrar Sesión"),
+              onTap: () {
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+              },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ValueListener.isDark.value = !ValueListener.isDark.value;
-        },
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(50)),
-        ),
-        child: ValueListener.isDark.value
-            ? const Icon(Icons.light_mode)
-            : const Icon(Icons.dark_mode),
+          onPressed: () {
+            ValueListener.isDark.value = !ValueListener.isDark.value;
+          },
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(50)),
+          ),
+          child: ValueListenableBuilder(
+            valueListenable: ValueListener.isDark,
+            builder: (context, value, child) {
+              return Icon(value ? Icons.light_mode : Icons.dark_mode);
+            },
+          )
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -268,3 +287,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

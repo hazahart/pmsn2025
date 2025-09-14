@@ -6,7 +6,7 @@ import 'package:pmsn2020/screens/register_screen.dart';
 import 'package:pmsn2020/utils/theme_app.dart';
 import 'package:pmsn2020/utils/value_listener.dart';
 
-void main() => runApp(PMSNApp());
+void main() => runApp(const PMSNApp());
 
 class PMSNApp extends StatelessWidget {
   const PMSNApp({super.key});
@@ -14,19 +14,28 @@ class PMSNApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: ValueListener.isDark,
-      builder: (context, value, _) {
-        return MaterialApp(
-          theme: value ? ThemeApp.darkTheme() : ThemeApp.lightTheme(),
-          title: 'Material App',
-          home: LoginScreen(),
-          routes: {
-            '/home': (context) => HomeScreen(),
-            '/practica_1': (context) => ResonatorScreen(),
-            '/register' : (context) => RegisterScreen(),
-          },
-        );
-      }
+        valueListenable: ValueListener.isDark,
+        builder: (context, value, _) {
+          return MaterialApp(
+            theme: value ? ThemeApp.darkTheme() : ThemeApp.lightTheme(),
+            title: 'Material App',
+            // Se define la ruta inicial de la aplicación.
+            initialRoute: '/login',
+            routes: {
+              // Se define la ruta de login explícitamente.
+              '/login': (context) => const LoginScreen(),
+              '/register' : (context) => const RegisterScreen(),
+              '/practica_1': (context) => ResonatorScreen(),
+              // Ahora la ruta '/home' sabe cómo recibir y procesar los datos del usuario.
+              '/home': (context) {
+                // 1. Se extraen los argumentos (el mapa del usuario) de la ruta de forma segura.
+                final user = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+                // 2. Se pasan los datos del usuario (o null) al constructor de HomeScreen.
+                return HomeScreen(user: user);
+              },
+            },
+          );
+        }
     );
   }
 }

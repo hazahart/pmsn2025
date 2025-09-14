@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'package:pmsn2020/database/users_database.dart';
 import 'package:toastification/toastification.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
 
+  final UsersDatabase usersDB = UsersDatabase();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -25,13 +29,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _pickImage(ImageSource source) async {
     try {
       final pickedFile = await _picker.pickImage(source: source, imageQuality: 80);
-      if (pickedFile != null) {
-        setState(() {
-          _profileImage = File(pickedFile.path);
-        });
-      }
+      if (pickedFile == null) return;
+
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = p.basename(pickedFile.path);
+      final savedImage = await File(pickedFile.path).copy('${appDir.path}/$fileName');
+
+      setState(() {
+        _profileImage = savedImage;
+      });
     } catch (e) {
-      showToast('Error al seleccionar imagen', tipo: ToastificationType.error);
+      showToast('Error al seleccionar o guardar la imagen', tipo: ToastificationType.error);
     }
   }
 
@@ -242,9 +250,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void register() {
+  void register() async {
     final name = nameController.text;
-    final user = userController.text;
+    final email = userController.text;
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
 
@@ -253,7 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    if (name.isEmpty || user.isEmpty || password.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
       showToast("Por favor, completa todos los campos.", tipo: ToastificationType.warning);
       return;
     }
@@ -263,23 +271,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Simular el registro
-    showToast(
-      "¡Registro exitoso, $name!",
-      tipo: ToastificationType.success,
-    );
-    setState(() {
-      isLoading = true;
-    });
+    final existingUser = await usersDB.getUserByEmail(email);
+    if (existingUser != null) {
+      showToast("Este correo electrónico ya está registrado.", tipo: ToastificationType.error);
+      return;
+    }
 
-    Future.delayed(const Duration(milliseconds: 3000)).then((value) {
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-    });
+    Map<String, dynamic> userData = {
+      'fullName': name,
+      'email': email,
+      'password': password,
+      'imagePath': _profileImage!.path,
+    };
+
+    final newUserId = await usersDB.insertUser(userData);
+
+    if (newUserId > 0) {
+      // Obtenemos los datos del usuario recién insertado para pasarlos a la siguiente pantalla
+      final newUser = await usersDB.getUserByEmail(email);
+      showToast(
+        "¡Registro exitoso, $name!",
+        tipo: ToastificationType.success,
+      );
+      setState(() {
+        isLoading = true;
+      });
+
+      Future.delayed(const Duration(milliseconds: 2000)).then((_) {
+        // Ahora se envían los datos del nuevo usuario como argumento.
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false, arguments: newUser);
+      });
+    } else {
+      showToast(
+        "Ocurrió un error durante el registro.",
+        tipo: ToastificationType.error,
+      );
+    }
   }
 
   @override
   void dispose() {
-    // Limpia los controladores cuando el widget se destruye
     nameController.dispose();
     userController.dispose();
     passwordController.dispose();

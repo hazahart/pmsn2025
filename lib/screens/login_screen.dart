@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pmsn2020/database/users_database.dart';
 import 'package:toastification/toastification.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,14 +14,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
 
+  final UsersDatabase usersDB = UsersDatabase();
+  final TextEditingController userController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final opacityDark = isDark ? 0.5 : 1.0;
-
-    TextEditingController userController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
 
     final txtUser = TextField(
       keyboardType: TextInputType.emailAddress,
@@ -30,26 +31,21 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'Correo electrónico',
         hintStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         filled: true,
-        fillColor: isDark
-            ? Colors.white.withValues(alpha: 0.3)
-            : Colors.grey[200],
-        border: OutlineInputBorder(),
+        fillColor: isDark ? Colors.white.withOpacity(0.3) : Colors.grey[200],
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
 
     final txtPassword = TextField(
-      keyboardType: TextInputType.visiblePassword,
-      controller: passwordController,
       obscureText: true,
+      controller: passwordController,
       style: TextStyle(color: isDark ? Colors.white : Colors.black),
       decoration: InputDecoration(
         hintText: 'Contraseña',
         hintStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
         filled: true,
-        fillColor: isDark
-            ? Colors.white.withValues(alpha: 0.3)
-            : Colors.grey[200],
-        border: OutlineInputBorder(),
+        fillColor: isDark ? Colors.white.withOpacity(0.3) : Colors.grey[200],
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
 
@@ -90,8 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: isDark
-                              ? Colors.white.withValues(alpha: 0.1)
-                              : Colors.black.withValues(alpha: 0.25),
+                              ? Colors.white.withOpacity(0.1)
+                              : Colors.black.withOpacity(0.25),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Column(
@@ -101,13 +97,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             txtPassword,
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: () => login(userController.text),
+                              onPressed: () => login(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: isDark
                                     ? Colors.blue[200]
                                     : Colors.blue[300],
+                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                               ),
-                              child: Text(
+                              child: const Text(
                                 'Iniciar sesión',
                                 style: TextStyle(color: Colors.black),
                               ),
@@ -124,9 +121,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  isLoading
-                      ? Lottie.asset('assets/animations/loader_cat.json')
-                      : Container(),
+                  if (isLoading)
+                    Lottie.asset('assets/animations/loader_cat.json')
+                  else
+                    Container(),
                 ],
               ),
             ),
@@ -136,37 +134,61 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  showToast(
-    String mensaje, {
-    ToastificationType? tipo,
-    AlignmentGeometry? align,
-  }) {
+  void showToast(
+      String mensaje, {
+        ToastificationType? tipo,
+        AlignmentGeometry? align,
+      }) {
     toastification.show(
       context: context,
       title: Text(mensaje),
-      autoCloseDuration: Duration(seconds: 3),
+      autoCloseDuration: const Duration(seconds: 4),
       type: tipo,
-      alignment: align,
+      alignment: align ?? Alignment.topCenter,
+      style: ToastificationStyle.flat,
     );
   }
 
-  login(String user) {
-    if (user.isEmpty) {
-      showToast("Por favor ingresa tu correo", tipo: ToastificationType.error);
-    } else {
+  void login() async {
+    final email = userController.text;
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      showToast("Por favor, ingresa correo y contraseña.", tipo: ToastificationType.warning);
+      return;
+    }
+
+    final user = await usersDB.getUserByEmail(email);
+
+    if (user == null) {
+      showToast("Credenciales incorrectas.", tipo: ToastificationType.error);
+      return;
+    }
+
+    final hashedPassword = UsersDatabase.hashPassword(password);
+
+    if (hashedPassword == user['password']) {
       showToast(
-        "Iniciando sesión como $user",
+        "¡Bienvenido, ${user['fullName']}!",
         tipo: ToastificationType.success,
       );
-      isLoading = true;
-      setState(() {});
-      Future.delayed(
-        Duration(milliseconds: 3000),
-      ).then((value) => Navigator.pushNamed(context, '/home'));
+      setState(() {
+        isLoading = true;
+      });
+      Future.delayed(const Duration(milliseconds: 2000)).then((_) {
+        // Ahora se envían los datos del usuario como argumento a la ruta '/home'.
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false, arguments: user);
+      });
+    } else {
+      showToast("Credenciales incorrectas.", tipo: ToastificationType.error);
     }
   }
 
-  validar() {
-    isLoading = true;
+  @override
+  void dispose() {
+    userController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }
+
