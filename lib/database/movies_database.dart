@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:pmsn2020/models/movie_dao.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -47,5 +48,11 @@ class MoviesDatabase {
   Future<int> delete (String table, int id) async {
     var conn = await database;
     return conn!.delete(table, where: "id_movie = ?", whereArgs: [id]);
+  }
+
+  Future<List<MovieDAO>?> select() async {
+    var conn = await database;
+    final res = await conn!.query("movies");
+    return res.map((movie) => MovieDAO.fromMap(movie)).toList();
   }
 }
