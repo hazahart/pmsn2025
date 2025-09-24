@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/practica_1/p1_main.dart';
 import 'package:pmsn2020/screens/home_screen.dart';
+import 'package:pmsn2020/screens/list_movies.dart';
 import 'package:pmsn2020/screens/login_screen.dart';
 import 'package:pmsn2020/screens/register_screen.dart';
 import 'package:pmsn2020/utils/theme_app.dart';
@@ -20,10 +21,11 @@ class PMSNApp extends StatelessWidget {
             theme: value ? ThemeApp.darkTheme() : ThemeApp.lightTheme(),
             title: 'Material App',
             // Se define la ruta inicial de la aplicación.
-            initialRoute: '/login',
+            initialRoute: '/home',
             routes: {
               // Se define la ruta de login explícitamente.
               '/login': (context) => const LoginScreen(),
+              '/listdb': (context) => ListMovies(),
               '/register' : (context) => const RegisterScreen(),
               '/practica_1': (context) => ResonatorScreen(),
               // Ahora la ruta '/home' sabe cómo recibir y procesar los datos del usuario.

@@ -234,6 +234,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const Divider(),
             ListTile(
+              leading: const Icon(Icons.movie),
+              title: const Text("Movies DB"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/listdb');
+              },
+            ),
+            const Divider(),
+            ListTile(
               leading: const Icon(Icons.logout),
               title: const Text("Cerrar Sesión"),
               onTap: () {
