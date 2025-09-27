@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/practica_1/p1_main.dart';
+import 'package:pmsn2020/screens/add_movie_screen.dart';
 import 'package:pmsn2020/screens/home_screen.dart';
 import 'package:pmsn2020/screens/list_movies.dart';
 import 'package:pmsn2020/screens/login_screen.dart';
@@ -26,6 +27,7 @@ class PMSNApp extends StatelessWidget {
               // Se define la ruta de login explícitamente.
               '/login': (context) => const LoginScreen(),
               '/listdb': (context) => ListMovies(),
+              '/addmovie': (context) => AddMovieScreen(),
               '/register' : (context) => const RegisterScreen(),
               '/practica_1': (context) => ResonatorScreen(),
               // Ahora la ruta '/home' sabe cómo recibir y procesar los datos del usuario.

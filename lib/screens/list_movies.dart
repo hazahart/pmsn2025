@@ -20,7 +20,7 @@ class _ListMoviesState extends State<ListMovies> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lista de películas')),
+      appBar: AppBar(title: Text('Lista de películas'), actions: []),
       body: FutureBuilder(
         future: moviesDB!.select(),
         builder: (context, snapshot) {
@@ -30,25 +30,32 @@ class _ListMoviesState extends State<ListMovies> {
             );
           } else {
             if (snapshot.hasData) {
-              return ListView.builder(
-                itemBuilder: (context, index) {
-                  final movie = snapshot.data![index];
-                  return Container(
-                    height: 100,
-                    color: Color(0xFF000000),
-                    child: Text(movie.title! ?? "No title"),
-                  );
-                },
-              );
+              return snapshot.data!.isNotEmpty
+                  ? ListView.builder(
+                      itemBuilder: (context, index) {
+                        final movie = snapshot.data![index];
+                        return Container(
+                          height: 100,
+                          color: Color(0xFF000000),
+                          child: Text(movie.title! ?? "No title"),
+                        );
+                      },
+                    )
+                  : Center(child: Text("No entries"));
             } else {
-              return Center(
-                child: CircularProgressIndicator(
-                )
-              );
+              return Center(child: CircularProgressIndicator());
             }
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/addmovie');
+          setState(() {});
+        },
+        child: const Icon(Icons.add),
+      ),
+
     );
   }
 }
