@@ -31,13 +31,34 @@ class _ListMoviesState extends State<ListMovies> {
           } else {
             if (snapshot.hasData) {
               return snapshot.data!.isNotEmpty
-                  ? ListView.builder(
+                  ? ListView.separated(
+                      separatorBuilder: (context, index) => Divider(),
+                      itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         final movie = snapshot.data![index];
                         return Container(
                           height: 100,
                           color: Color(0xFF000000),
-                          child: Text(movie.title! ?? "No title"),
+                          child: Column(
+                            children: [
+                              Text(movie.title!),
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.end,
+
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.edit),
+                                  ),
+                                  Expanded(child: Container()),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         );
                       },
                     )
@@ -55,7 +76,6 @@ class _ListMoviesState extends State<ListMovies> {
         },
         child: const Icon(Icons.add),
       ),
-
     );
   }
 }
