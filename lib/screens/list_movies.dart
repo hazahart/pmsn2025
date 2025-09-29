@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/database/movies_database.dart';
 
@@ -38,21 +39,25 @@ class _ListMoviesState extends State<ListMovies> {
                         final movie = snapshot.data![index];
                         return Container(
                           height: 100,
-                          color: Color(0xFF000000),
+                          color: CupertinoColors.systemGrey4,
                           child: Column(
                             children: [
                               Text(movie.title!),
                               Row(
-                                // mainAxisAlignment: MainAxisAlignment.end,
-
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
                                     onPressed: () {},
                                     icon: Icon(Icons.edit),
                                   ),
-                                  Expanded(child: Container()),
+                                  // Expanded(child: Container()),
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      return showDialog(
+                                        context: context,
+                                        builder: (_) => _buildAlert(),
+                                      );
+                                    },
                                     icon: Icon(Icons.delete),
                                   ),
                                 ],
@@ -76,6 +81,25 @@ class _ListMoviesState extends State<ListMovies> {
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget _buildAlert() {
+    return CupertinoAlertDialog(
+      title: Text("Mensaje de sistema"),
+      content: Text("Borrar?"),
+      actions: [
+        TextButton(
+          onPressed: () {},
+          child: Text("Aceptar", style: TextStyle(color: Color(0xFF2781EA))),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text("Cancelar", style: TextStyle(color: Color(0xFFCC1100))),
+        ),
+      ],
     );
   }
 }
