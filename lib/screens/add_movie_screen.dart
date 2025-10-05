@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/database/movies_database.dart';
+import 'package:pmsn2020/models/movie_dao.dart';
 
 class AddMovieScreen extends StatefulWidget {
   const AddMovieScreen({super.key});
@@ -23,6 +24,14 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MovieDAO? objM;
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      objM = ModalRoute.of(context)!.settings.arguments as MovieDAO;
+      conTitle.text = objM.title!;
+      conTime.text = objM.time!;
+      conRelease.text = objM.date_release!;
+    }
+
     final txtTitle = TextFormField(
       controller: conTitle,
       decoration: InputDecoration(hintText: "Título"),
@@ -42,11 +51,22 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
 
     final btnSave = ElevatedButton(
       onPressed: () async {
-        moviesDB?.insert("movies", {
-          'title': conTitle.text,
-          'time': conTime.text,
-          'date_release': conRelease.text,
-        }).then((value) => Navigator.pop(context));
+        if (objM != null) {
+          moviesDB?.update("movies", {
+                'title': conTitle.text,
+                'time': conTime.text,
+                'date_release': conRelease.text,
+              })
+              .then((value) => Navigator.pop(context));
+        } else {
+          moviesDB?.insert("movies", {
+                "id_movie": objM?.id_movie,
+                "title": conTitle.text,
+                "time": conTime.text,
+                "date_release": conRelease.text,
+              })
+              .then((value) => Navigator.pop(context));
+        }
       },
       child: Text('Guardar'),
     );

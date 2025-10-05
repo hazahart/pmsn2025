@@ -39,7 +39,6 @@ class _ListMoviesState extends State<ListMovies> {
                         final movie = snapshot.data![index];
                         return Container(
                           height: 100,
-                          color: CupertinoColors.systemGrey4,
                           child: Column(
                             children: [
                               Text(movie.title!),
@@ -47,7 +46,11 @@ class _ListMoviesState extends State<ListMovies> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Navigator.pushNamed(
+                                      context,
+                                      "/addmovie",
+                                      arguments: movie,
+                                    ).then((value) => setState(() {})),
                                     icon: Icon(Icons.edit),
                                   ),
                                   // Expanded(child: Container()),
@@ -55,7 +58,8 @@ class _ListMoviesState extends State<ListMovies> {
                                     onPressed: () async {
                                       return showDialog(
                                         context: context,
-                                        builder: (_) => _buildAlert(),
+                                        builder: (_) =>
+                                            _buildAlert(movie.id_movie!),
                                       );
                                     },
                                     icon: Icon(Icons.delete),
@@ -84,13 +88,25 @@ class _ListMoviesState extends State<ListMovies> {
     );
   }
 
-  Widget _buildAlert() {
+  Widget _buildAlert(int idMovie) {
     return CupertinoAlertDialog(
       title: Text("Mensaje de sistema"),
       content: Text("Borrar?"),
       actions: [
         TextButton(
-          onPressed: () {},
+          onPressed: () =>
+              moviesDB!.delete("movies", idMovie).then((int value) {
+                final msg;
+                if (value > 0) {
+                  msg = "Borrado";
+                  setState(() {});
+                } else {
+                  msg = "No se elimino el registro";
+                }
+                final SnackBar snackBar = SnackBar(content: Text(msg));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                Navigator.pop(context);
+              }),
           child: Text("Aceptar", style: TextStyle(color: Color(0xFF2781EA))),
         ),
         TextButton(
