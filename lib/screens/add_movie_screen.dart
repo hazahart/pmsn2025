@@ -53,6 +53,7 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
       onPressed: () async {
         if (objM != null) {
           moviesDB?.update("movies", {
+                'id_movie': objM.id_movie,
                 'title': conTitle.text,
                 'time': conTime.text,
                 'date_release': conRelease.text,
