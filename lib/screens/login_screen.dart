@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pmsn2020/database/users_database.dart';
+import 'package:pmsn2020/firebase/firebase_auth.dart';
 import 'package:toastification/toastification.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,6 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final UsersDatabase usersDB = UsersDatabase();
   final TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  FirebaseAuthentication? firebaseAuthentication;
+
+  @override
+  initState() {
+    super.initState();
+    firebaseAuthentication = FirebaseAuthentication();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +105,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             txtPassword,
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: () => login(),
+                              onPressed: () => loginWithFirebase(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: isDark
                                     ? Colors.blue[200]
                                     : Colors.blue[300],
-                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 50,
+                                  vertical: 15,
+                                ),
                               ),
                               child: const Text(
                                 'Iniciar sesión',
@@ -110,7 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () => Navigator.pushNamed(context, '/register'),
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, '/register'),
                               child: Text(
                                 'Registrarse',
                                 style: TextStyle(color: Colors.blue[200]),
@@ -135,10 +147,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void showToast(
-      String mensaje, {
-        ToastificationType? tipo,
-        AlignmentGeometry? align,
-      }) {
+    String mensaje, {
+    ToastificationType? tipo,
+    AlignmentGeometry? align,
+  }) {
     toastification.show(
       context: context,
       title: Text(mensaje),
@@ -154,7 +166,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      showToast("Por favor, ingresa correo y contraseña.", tipo: ToastificationType.warning);
+      showToast(
+        "Por favor, ingresa correo y contraseña.",
+        tipo: ToastificationType.warning,
+      );
       return;
     }
 
@@ -177,7 +192,51 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       Future.delayed(const Duration(milliseconds: 2000)).then((_) {
         // Ahora se envían los datos del usuario como argumento a la ruta '/home'.
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false, arguments: user);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) => false,
+          arguments: user,
+        );
+      });
+    } else {
+      showToast("Credenciales incorrectas.", tipo: ToastificationType.error);
+    }
+  }
+
+  void loginWithFirebase() async {
+    final email = userController.text;
+    final password = passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      showToast(
+        "Por favor, ingresa correo y contraseña.",
+        tipo: ToastificationType.warning,
+      );
+      return;
+    }
+    firebaseAuthentication!.registerWithEmailAndPassword(email, password);
+    final user = await usersDB.getUserByEmail(email);
+    if (user == null) {
+      showToast("Credenciales incorrectas.", tipo: ToastificationType.error);
+      return;
+    }
+    final hashedPassword = UsersDatabase.hashPassword(password);
+    if (hashedPassword == user['password']) {
+      showToast(
+        "¡Bienvenido, ${user['fullName']}!",
+        tipo: ToastificationType.success,
+      );
+      setState(() {
+        isLoading = true;
+      });
+      Future.delayed(const Duration(milliseconds: 2000)).then((_) {
+        // Ahora se envían los datos del usuario como argumento a la ruta '/home'.
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) => false,
+          arguments: user,
+        );
       });
     } else {
       showToast("Credenciales incorrectas.", tipo: ToastificationType.error);
@@ -191,4 +250,3 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 }
-

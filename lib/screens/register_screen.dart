@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:pmsn2020/database/users_database.dart';
+import 'package:pmsn2020/firebase/firebase_auth.dart';
 import 'package:toastification/toastification.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -24,22 +25,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  FirebaseAuthentication? firebaseAuthentication;
+
+  @override
+  initState() {
+    super.initState();
+    firebaseAuthentication = FirebaseAuthentication();
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final pickedFile = await _picker.pickImage(source: source, imageQuality: 80);
+      final pickedFile = await _picker.pickImage(
+        source: source,
+        imageQuality: 80,
+      );
       if (pickedFile == null) return;
 
       final appDir = await getApplicationDocumentsDirectory();
       final fileName = p.basename(pickedFile.path);
-      final savedImage = await File(pickedFile.path).copy('${appDir.path}/$fileName');
+      final savedImage = await File(
+        pickedFile.path,
+      ).copy('${appDir.path}/$fileName');
 
       setState(() {
         _profileImage = savedImage;
       });
     } catch (e) {
-      showToast('Error al seleccionar o guardar la imagen', tipo: ToastificationType.error);
+      showToast(
+        'Error al seleccionar o guardar la imagen',
+        tipo: ToastificationType.error,
+      );
     }
   }
 
@@ -72,7 +89,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -177,14 +193,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onTap: () => _showImageSourceActionSheet(context),
                               child: CircleAvatar(
                                 radius: 50,
-                                backgroundColor: isDark ? Colors.white.withOpacity(0.3) : Colors.grey[400],
-                                backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
+                                backgroundColor: isDark
+                                    ? Colors.white.withOpacity(0.3)
+                                    : Colors.grey[400],
+                                backgroundImage: _profileImage != null
+                                    ? FileImage(_profileImage!)
+                                    : null,
                                 child: _profileImage == null
                                     ? Icon(
-                                  Icons.add_a_photo,
-                                  color: isDark ? Colors.white70 : Colors.white,
-                                  size: 40,
-                                )
+                                        Icons.add_a_photo,
+                                        color: isDark
+                                            ? Colors.white70
+                                            : Colors.white,
+                                        size: 40,
+                                      )
                                     : null,
                               ),
                             ),
@@ -203,7 +225,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 backgroundColor: isDark
                                     ? Colors.green[200]
                                     : Colors.green,
-                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 50,
+                                  vertical: 15,
+                                ),
                               ),
                               child: const Text(
                                 'Registrarse',
@@ -236,10 +261,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void showToast(
-      String mensaje, {
-        ToastificationType? tipo,
-        AlignmentGeometry? align,
-      }) {
+    String mensaje, {
+    ToastificationType? tipo,
+    AlignmentGeometry? align,
+  }) {
     toastification.show(
       context: context,
       title: Text(mensaje),
@@ -259,28 +284,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
 
     if (_profileImage == null) {
-      showToast("Por favor, selecciona una imagen de perfil.", tipo: ToastificationType.warning);
+      showToast(
+        "Por favor, selecciona una imagen de perfil.",
+        tipo: ToastificationType.warning,
+      );
       return;
     }
 
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      showToast("Por favor, completa todos los campos.", tipo: ToastificationType.warning);
+      showToast(
+        "Por favor, completa todos los campos.",
+        tipo: ToastificationType.warning,
+      );
       return;
     }
 
     if (password != confirmPassword) {
-      showToast("Las contraseñas no coinciden.", tipo: ToastificationType.error);
+      showToast(
+        "Las contraseñas no coinciden.",
+        tipo: ToastificationType.error,
+      );
       return;
     }
 
     final existingUser = await usersDB.getUserByEmail(email);
     if (existingUser != null) {
-      showToast("Este correo electrónico ya está registrado.", tipo: ToastificationType.error);
+      showToast(
+        "Este correo electrónico ya está registrado.",
+        tipo: ToastificationType.error,
+      );
       return;
     }
 
     if (!emailRegex.hasMatch(email)) {
-      showToast("Por favor, introduce un correo electrónico válido.", tipo: ToastificationType.error);
+      showToast(
+        "Por favor, introduce un correo electrónico válido.",
+        tipo: ToastificationType.error,
+      );
       return;
     }
 
@@ -296,18 +336,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (newUserId > 0) {
       // Obtenemos los datos del usuario recién insertado para pasarlos a la siguiente pantalla
       final newUser = await usersDB.getUserByEmail(email);
-      showToast(
-        "¡Registro exitoso, $name!",
-        tipo: ToastificationType.success,
-      );
+      showToast("¡Registro exitoso, $name!", tipo: ToastificationType.success);
       setState(() {
         isLoading = true;
       });
 
-      Future.delayed(const Duration(milliseconds: 2000)).then((_) {
-        // Ahora se envían los datos del nuevo usuario como argumento.
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false, arguments: newUser);
-      });
+      // Future.delayed(const Duration(milliseconds: 2000)).then((_) {
+      //   // Ahora se envían los datos del nuevo usuario como argumento.
+      //   Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false, arguments: newUser);
+      // });
+      firebaseAuthentication!
+          .registerWithEmailAndPassword(email, password)
+          .then((user) {
+            if (user != null) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/home',
+                (route) => false,
+                arguments: newUser,
+              );
+            } else {
+              showToast(
+                "Ocurrió un error durante el registro.",
+                tipo: ToastificationType.error,
+              );
+            }
+          });
     } else {
       showToast(
         "Ocurrió un error durante el registro.",
@@ -325,4 +379,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 }
-
