@@ -27,22 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushNamed(context, '/practica_1');
         break;
       case 2:
-        toastification.show(
-          context: context,
-          title: const Text('Buscar'),
-          type: ToastificationType.info,
-          autoCloseDuration: const Duration(milliseconds: 3000),
-          alignment: Alignment.topRight,
-        );
+        Navigator.pushNamed(context, '/listdb');
         break;
       case 3:
-        toastification.show(
-          context: context,
-          title: const Text('Notificaciones'),
-          type: ToastificationType.info,
-          autoCloseDuration: const Duration(milliseconds: 3000),
-          alignment: Alignment.topRight,
-        );
+        Navigator.pushNamed(context, '/songslist');
         break;
       case 4:
         toastification.show(
@@ -181,16 +169,16 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Colors.black87,
             ),
             _buildGridButton(
-              Icons.search,
-              "Buscar",
+              Icons.movie,
+              "Peliculas",
               2,
-              dynamicColor: colorScheme.secondary,
+              backgroundColor: Colors.green[300],
             ),
             _buildGridButton(
-              Icons.notifications,
-              "Notificaciones",
+              Icons.music_note,
+              "Lista de canciones",
               3,
-              dynamicColor: colorScheme.tertiary,
+              backgroundColor: Colors.blue[300],
             ),
             _buildGridButton(
               Icons.person,

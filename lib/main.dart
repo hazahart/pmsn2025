@@ -5,6 +5,7 @@ import 'package:pmsn2020/practica_1/p1_main.dart';
 import 'package:pmsn2020/screens/add_movie_screen.dart';
 import 'package:pmsn2020/screens/home_screen.dart';
 import 'package:pmsn2020/screens/list_movies.dart';
+import 'package:pmsn2020/screens/list_songs_screen.dart';
 import 'package:pmsn2020/screens/login_screen.dart';
 import 'package:pmsn2020/screens/register_screen.dart';
 import 'package:pmsn2020/utils/theme_app.dart';
@@ -38,6 +39,7 @@ class PMSNApp extends StatelessWidget {
             '/addmovie': (context) => AddMovieScreen(),
             '/register': (context) => const RegisterScreen(),
             '/practica_1': (context) => ResonatorScreen(),
+            '/songslist': (context) => const ListSongsScreen(),
             // Ahora la ruta '/home' sabe cómo recibir y procesar los datos del usuario.
             '/home': (context) {
               // 1. Se extraen los argumentos (el mapa del usuario) de la ruta de forma segura.
