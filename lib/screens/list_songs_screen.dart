@@ -26,7 +26,30 @@ class _ListSongsScreenState extends State<ListSongsScreen> {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 final song = snapshot.data!.docs[index];
-                return ListTile(title: Text(song['title']));
+                return ListTile(
+                  title: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            song['title'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            song['artist'],
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                          Text(
+                            song['duration'],
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               },
             );
           } else {
