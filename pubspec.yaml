@@ -43,6 +43,7 @@ flutter:
     - assets/animations/
     - assets/icons/wuwa/
     - assets/images/wuwa/
+    - assets/images/songs/
 
   fonts:
     - family: Vikings

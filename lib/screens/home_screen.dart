@@ -178,7 +178,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Icons.music_note,
               "Lista de canciones",
               3,
-              backgroundColor: Colors.blue[300],
+              backgroundImage: "assets/images/songs/ale_the_warning.jpg",
+              backgroundColor: Colors.grey[900],
             ),
             _buildGridButton(
               Icons.person,
