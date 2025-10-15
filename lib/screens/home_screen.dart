@@ -272,8 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildIcon(Icons.search_outlined, Icons.search, 2, "Buscar"),
             const SizedBox(width: 48),
             _buildIcon(
-              Icons.notifications_outlined,
-              Icons.notifications,
+              Icons.music_note_outlined,
+              Icons.music_note,
               3,
               "Notificaciones",
             ),
