@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pmsn2020/firebase_options.dart';
 import 'package:pmsn2020/practica_1/p1_main.dart';
 import 'package:pmsn2020/screens/add_movie_screen.dart';
+import 'package:pmsn2020/screens/add_song_screen.dart';
 import 'package:pmsn2020/screens/home_screen.dart';
 import 'package:pmsn2020/screens/list_movies.dart';
 import 'package:pmsn2020/screens/list_songs_screen.dart';
@@ -40,6 +41,7 @@ class PMSNApp extends StatelessWidget {
             '/register': (context) => const RegisterScreen(),
             '/practica_1': (context) => ResonatorScreen(),
             '/songslist': (context) => const ListSongsScreen(),
+            '/addsong': (context) => AddSongScreen(),
             // Ahora la ruta '/home' sabe cómo recibir y procesar los datos del usuario.
             '/home': (context) {
               // 1. Se extraen los argumentos (el mapa del usuario) de la ruta de forma segura.

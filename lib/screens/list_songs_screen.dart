@@ -126,10 +126,7 @@ class _ListSongsScreenState extends State<ListSongsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddSongScreen()),
-          );
+          Navigator.pushNamed(context, "/addsong");
         },
         child: const Icon(Icons.add),
       ),
