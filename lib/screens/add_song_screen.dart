@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/firebase/songs_firebase.dart';
 
@@ -20,6 +21,102 @@ class _AddSongScreenState extends State<AddSongScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final fields = [
+      ElasticIn(
+        duration: const Duration(milliseconds: 700),
+        delay: const Duration(milliseconds: 100),
+        child: TextFormField(
+          controller: _titleController,
+          decoration: const InputDecoration(
+            labelText: "Título",
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              (value == null || value.isEmpty) ? "Ingresa el título" : null,
+        ),
+      ),
+      ElasticIn(
+        duration: const Duration(milliseconds: 700),
+        delay: const Duration(milliseconds: 250),
+        child: TextFormField(
+          controller: _artistController,
+          decoration: const InputDecoration(
+            labelText: "Artista",
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              (value == null || value.isEmpty) ? "Ingresa el artista" : null,
+        ),
+      ),
+      ElasticIn(
+        duration: const Duration(milliseconds: 700),
+        delay: const Duration(milliseconds: 400),
+        child: TextFormField(
+          controller: _durationController,
+          decoration: const InputDecoration(
+            labelText: "Duración (ej. 2:50)",
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              (value == null || value.isEmpty) ? "Ingresa la duración" : null,
+        ),
+      ),
+      ElasticIn(
+        duration: const Duration(milliseconds: 700),
+        delay: const Duration(milliseconds: 550),
+        child: TextFormField(
+          controller: _imageUrlController,
+          decoration: const InputDecoration(
+            labelText: "URL de la imagen",
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              (value == null || value.isEmpty) ? "Ingresa la URL" : null,
+        ),
+      ),
+      ElasticIn(
+        duration: const Duration(milliseconds: 700),
+        delay: const Duration(milliseconds: 700),
+        child: TextFormField(
+          controller: _lyricsController,
+          maxLines: 6,
+          decoration: const InputDecoration(
+            labelText: "Letra",
+            alignLabelWithHint: true,
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+      ElasticIn(
+        duration: const Duration(milliseconds: 700),
+        delay: const Duration(milliseconds: 850),
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.save),
+          label: const Text("Guardar Canción"),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 50),
+          ),
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              await _songsFirebase.addSong({
+                'title': _titleController.text,
+                'artist': _artistController.text,
+                'duration': _durationController.text,
+                'lyrics': _lyricsController.text,
+                'imageUrl': _imageUrlController.text,
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Canción registrada correctamente'),
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Registrar Canción"),
@@ -29,97 +126,10 @@ class _AddSongScreenState extends State<AddSongScreen> {
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: "Título",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Ingresa el título";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _artistController,
-                decoration: const InputDecoration(
-                  labelText: "Artista",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Ingresa el artista";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _durationController,
-                decoration: const InputDecoration(
-                  labelText: "Duración (ej. 2:50)",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Ingresa la duración";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _imageUrlController,
-                decoration: const InputDecoration(
-                  labelText: "URL de la imagen",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Ingresa la URL de la imagen";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _lyricsController,
-                maxLines: 6,
-                decoration: const InputDecoration(
-                  labelText: "Letra",
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 25),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                label: const Text("Guardar Canción"),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    await _songsFirebase.addSong({
-                      'title': _titleController.text,
-                      'artist': _artistController.text,
-                      'duration': _durationController.text,
-                      'lyrics': _lyricsController.text,
-                      'imageUrl': _imageUrlController.text,
-                    });
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Canción registrada correctamente')),
-                    );
-                  }
-                },
-              ),
-            ],
+          child: ListView.separated(
+            itemCount: fields.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 15),
+            itemBuilder: (context, index) => fields[index],
           ),
         ),
       ),

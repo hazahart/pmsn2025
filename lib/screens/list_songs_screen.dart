@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn2020/firebase/songs_firebase.dart';
 import 'package:pmsn2020/widgets/song_widget.dart';
@@ -31,25 +32,32 @@ class _ListSongsScreenState extends State<ListSongsScreen> {
               itemCount: docs.length,
               itemBuilder: (context, index) {
                 final song = docs[index];
-                return SongWidget(
-                  song: song.data() as Map<String, dynamic>,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Letra de: ${song['title']}'),
-                        content: SingleChildScrollView(
-                          child: Text(song['lyrics']),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cerrar'),
+                return FadeInUp(
+                  duration: const Duration(milliseconds: 500),
+                  delay: Duration(milliseconds: 100 * index),
+                  child: SongWidget(
+                    song: song.data() as Map<String, dynamic>,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => FadeInDown(
+                          duration: Duration(milliseconds: 500),
+                          child: AlertDialog(
+                            title: Text('Letra de: ${song['title']}'),
+                            content: SingleChildScrollView(
+                              child: Text(song['lyrics']),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cerrar'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );
