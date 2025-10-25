@@ -33,13 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushNamed(context, '/songslist');
         break;
       case 4:
-        toastification.show(
-          context: context,
-          title: const Text('Contactos'),
-          type: ToastificationType.info,
-          autoCloseDuration: const Duration(milliseconds: 3000),
-          alignment: Alignment.topRight,
-        );
+        Navigator.pushNamed(context, '/api_movies');
         break;
     }
   }
@@ -182,8 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Colors.grey[900],
             ),
             _buildGridButton(
-              Icons.person,
-              "Contactos",
+              Icons.movie,
+              "API Movies (The Movie DB)",
               4,
               dynamicColor: colorScheme.surfaceContainerHighest,
             ),
