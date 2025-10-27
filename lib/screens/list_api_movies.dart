@@ -20,14 +20,19 @@ class _ListApiMoviesState extends State<ListApiMovies> {
         future: apiMovies!.getMovies(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return GridView.builder(
-              itemCount: snapshot.data!.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                itemCount: snapshot.data!.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.7
+                ),
+                itemBuilder: (context, index) {
+                  return ItemMovieWidget(apiMovieDao: snapshot.data![index]);
+                },
               ),
-              itemBuilder: (context, index) {
-                return ItemMovieWidget(apiMovieDao: snapshot.data![index]);
-              },
             );
           } else {
             if (snapshot.hasError) {
