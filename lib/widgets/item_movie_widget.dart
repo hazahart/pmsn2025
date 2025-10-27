@@ -10,7 +10,9 @@ class ItemMovieWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      child: FadeInImage(placeholder: AssetImage('assets/loading-cat.gif'), image: NetworkImage("https://image.tmdb.org/t/p/original/${apiMovieDao.posterPath}")),
+      margin: EdgeInsets.all(5),
+      padding: EdgeInsets.all(2),
+      child: FadeInImage(placeholder: AssetImage('assets/animations/loading-cat.gif'), image: NetworkImage("https://image.tmdb.org/t/p/original/${apiMovieDao.posterPath}")),
     );
   }
 }

@@ -8,7 +8,7 @@ class ApiMovies {
 
   Future<List<dynamic>> getMovies() async {
     final response = await dio.get(URL);
-    final result = response.data;
+    final result = response.data['results'];
     return result.map((movie) => ApiMovieDao.fromMap(movie as Map<String, dynamic>)).toList();
   }
 }
