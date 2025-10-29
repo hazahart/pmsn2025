@@ -22,16 +22,31 @@ class _ListApiMoviesState extends State<ListApiMovies> {
           if (snapshot.hasData) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                itemCount: snapshot.data!.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.7
-                ),
-                itemBuilder: (context, index) {
-                  return ItemMovieWidget(apiMovieDao: snapshot.data![index]);
-                },
+              // child: GridView.builder(
+              //   itemCount: snapshot.data!.length,
+              //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              //     crossAxisCount: 2,
+              //     mainAxisSpacing: 10,
+              //     childAspectRatio: 0.7
+              //   ),
+              //   itemBuilder: (context, index) {
+              //     return ItemMovieWidget(apiMovieDao: snapshot.data![index]);
+              //   },
+              // ),
+              child: CustomScrollView(
+                slivers: [
+                  SliverGrid.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.7,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemBuilder: (context, index) {
+                      return ItemMovieWidget(apiMovieDao: snapshot.data![index]);
+                    },
+                    itemCount: snapshot.data!.length,
+                  ),
+                ],
               ),
             );
           } else {
